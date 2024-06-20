@@ -35,7 +35,7 @@ jobs:
             cpu: amd64
           - os: windows
             cpu: amd64
-        branch: [~, upstream/version-1-6, v2.0.6]
+        branch: [~, upstream/version-1-6, v2.0.6, upstream/devel]
         exclude:
           - target:
               os: macos
@@ -46,12 +46,21 @@ jobs:
           - target:
               os: windows
             branch: ~
+          - target:
+              os: windows
+            branch: upstream/devel
+          - target:
+              os: macos
+            branch: upstream/devel
         include:
           - branch: upstream/version-1-6
             branch-short: version-1-6
           - branch: v2.0.6
             branch-short: version-2-0
             nimflags-extra: --mm:refc
+          - branch: upstream/devel
+            branch-short: devel
+            nimflags-extra: ['--mm:refc', '--mm:orc']
           - target:
               os: linux
             builder: ['self-hosted','ubuntu-22.04']
@@ -66,7 +75,7 @@ jobs:
       run:
         shell: bash
 
-    name: ${{ matrix.target.os }}-${{ matrix.target.cpu }}${{ matrix.branch != '' && ' (Nim ' || '' }}${{ matrix.branch-short }}${{ matrix.branch != '' && ')' || '' }}
+    name: ${{ matrix.target.os }}-${{ matrix.target.cpu }}${{ matrix.branch != '' && ' (Nim ' || '' }}${{ matrix.branch-short }}${{ matrix.nimflags-extra != '' && ' ' || '' }}${{ matrix.nimflags-extra }}${{ matrix.branch != '' && ')' || '' }}
     runs-on: ${{ matrix.builder }}
     steps:
       - name: Checkout
